@@ -1,4 +1,3 @@
-import link from "../models/link.js";
 import users from "../models/user.js";
 
 const UsersController = {

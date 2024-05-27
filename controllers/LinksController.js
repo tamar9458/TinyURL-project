@@ -21,7 +21,6 @@ const LinksController = {
   },
 
   add: async (req, res) => {
-   
     try {
       const newLink = await links.create(req.body);//הוספת חדש
       res.json(newLink);

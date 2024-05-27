@@ -1,4 +1,4 @@
-import express from 'express' 
+import express from 'express'
 import cors from "cors"
 import bodyParser from "body-parser";
 
@@ -16,7 +16,7 @@ app.use(bodyParser.json())
 
 app.use('/link', LinkRouter)
 app.use('/user', UserRouter)
-app.use('/',RedirectRouter)
+app.use('/', RedirectRouter)
 
 app.listen(port, () => {
   console.log(`Example app listening on http://localhost:${port}`)

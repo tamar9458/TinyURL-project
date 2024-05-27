@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 import links from "./link.js";
 
 const UserSchema = mongoose.Schema({
-   // _id: Number,
     name: String,
     email: String,
     password: String,
