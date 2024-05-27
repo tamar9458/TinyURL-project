@@ -23,29 +23,20 @@ const UsersController = {
     },
 
     add: async (req, res) => {
-        const { name, email, password } = req.body;
         try {
-            const newUser = await users.create({ name: name, email: email, password: password, links: [] });//הוספת חדש
+            const newUser = await users.create(req.body);//הוספת חדש
             res.json(newUser);
         } catch (e) {
             res.status(400).json({ message: e.message });
         }
     },
-
     update: async (req, res) => {
-        const { id } = req.params;
-        const { links, name, email, password } = req.body;
-
+        const { id } = req.params
         try {
-            const updatedUser = await users.findByIdAndUpdate(id, req.body, {
-                name: name,
-                email: email,
-                password: password,
-                links: links
-            });//עדכון לפי מזהה
-            res.json(updatedUser);
-        } catch (e) {
-            res.status(400).json({ message: e.message });
+            const updatedUser = await users.findByIdAndUpdate(id, req.body, { new: true })
+            res.json(updatedUser)
+        } catch (error) {
+            res.status(400).json({ message: error.message })
         }
     },
 

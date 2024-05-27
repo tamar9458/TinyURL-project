@@ -21,9 +21,9 @@ const LinksController = {
   },
 
   add: async (req, res) => {
-    const { originalURL } = req.body;
+   
     try {
-      const newLink = await links.create({ originalURL });//הוספת חדש
+      const newLink = await links.create(req.body);//הוספת חדש
       res.json(newLink);
     } catch (e) {
       res.status(400).json({ message: e.message });

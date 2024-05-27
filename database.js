@@ -7,7 +7,14 @@ const uriLocal = "mongodb://localhost:27017/tiny_db";
 
 const connectDB = async () => {
   await mongoose.connect(uriLocal);
+  
 }
+mongoose.set('toJSON', {
+  virtuals: true,
+  transform: (doc, converted) => {
+    delete converted._id;
+  }
+});
 const database = mongoose.connection;
 
 database.on('error', (error) => {

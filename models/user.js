@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
-import link from "./link.js";
+import links from "./link.js";
 
-const LinkSchema = mongoose.Schema({
+const UserSchema = mongoose.Schema({
    // _id: Number,
     name: String,
     email: String,
     password: String,
-    links: [mongoose.Schema.Types.ObjectId],
+    links: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: links
+    }],
 });
 
-export default mongoose.model("users", LinkSchema);
+export default mongoose.model("users", UserSchema);
