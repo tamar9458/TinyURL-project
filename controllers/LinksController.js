@@ -1,11 +1,12 @@
 import links from "../models/link.js";
+import users from "../models/user.js"
 
 const LinksController = {
- 
+
   getList: async (req, res) => {
     try {
       const getLinks = await links.find();//ללא סינון
-      res.json({ getLinks});
+      res.json({ getLinks });
     } catch (e) {
       res.status(400).json({ message: e.message });
     }
@@ -21,8 +22,14 @@ const LinksController = {
   },
 
   add: async (req, res) => {
+    const { userId } = req.body;
     try {
+      const user = await users.findById(userId);
+      if (!user)
+        return res.status(401).json({ message: " the user not found" });
       const newLink = await links.create(req.body);//הוספת חדש
+      user.links.push(newLink.id);
+      await user.save()
       res.json(newLink);
     } catch (e) {
       res.status(400).json({ message: e.message });
@@ -31,12 +38,11 @@ const LinksController = {
 
   update: async (req, res) => {
     const { id } = req.params;
-    const { url } = req.body;
-
+    const { originalUrl, userId } = req.body;
     try {
       const updatedLink = await links.findByIdAndUpdate(id, req.body, {
-        originURL: url,
-      });//עדכון לפי מזהה
+        originalUrl: originalUrl,
+      }, { new: true });//עדכון לפי מזהה
       res.json(updatedLink);
     } catch (e) {
       res.status(400).json({ message: e.message });
@@ -44,14 +50,38 @@ const LinksController = {
   },
 
   delete: async (req, res) => {
-    const { id } = req.params;
+    const { id, userId } = req.params;
     try {
+      const user = await users.findById(userId);
+      if (!user)
+        return res.status(401).json({ message: " the user not found" });
       const deleted = await links.findByIdAndDelete(id);//מחיקה לפי מזהה
+      user.links.remove(id);
+      await user.save();
       res.json(deleted);
     } catch (e) {
       res.status(400).json({ message: e.message });
     }
   },
+
+  getClicksByLink: async (req, res) => {
+    try {
+      const link = await links.findById(req.params.id);//שליפה לפי מזהה
+      const arr = [];
+      link.targetValues.forEach(element => {
+        arr.push({ "name": element.name, "value": 0 })
+      });
+      link.clicks.forEach(click => {
+        const a = arr.find(e => e.name == click.targetParamValue)
+        a.value++;
+      });
+      res.json(arr);
+
+    } catch (e) {
+      res.status(400).json({ message: e.message });
+    }
+
+  }
 };
 
 export default LinksController;

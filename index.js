@@ -14,8 +14,8 @@ const port = 3000
 app.use(cors())
 app.use(bodyParser.json())
 
-app.use('/link', LinkRouter)
 app.use('/user', UserRouter)
+app.use('/link', LinkRouter)
 app.use('/', RedirectRouter)
 
 app.listen(port, () => {
