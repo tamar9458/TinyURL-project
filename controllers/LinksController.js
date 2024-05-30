@@ -22,12 +22,12 @@ const LinksController = {
   },
 
   add: async (req, res) => {
-    const { userId } = req.body;
+    const { originalUrl, userId } = req.body;
     try {
       const user = await users.findById(userId);
       if (!user)
         return res.status(401).json({ message: " the user not found" });
-      const newLink = await links.create(req.body);//הוספת חדש
+      const newLink = await links.create({ originalUrl });//הוספת חדש
       user.links.push(newLink.id);
       await user.save()
       res.json(newLink);
@@ -38,7 +38,7 @@ const LinksController = {
 
   update: async (req, res) => {
     const { id } = req.params;
-    const { originalUrl, userId } = req.body;
+    const { originalUrl } = req.body;
     try {
       const updatedLink = await links.findByIdAndUpdate(id, req.body, {
         originalUrl: originalUrl,
@@ -50,7 +50,8 @@ const LinksController = {
   },
 
   delete: async (req, res) => {
-    const { id, userId } = req.params;
+    const { id } = req.params;
+    const { userId } = req.body;
     try {
       const user = await users.findById(userId);
       if (!user)
@@ -71,9 +72,11 @@ const LinksController = {
       link.targetValues.forEach(element => {
         arr.push({ "name": element.name, "value": 0 })
       });
+      console.log(arr);
+      console.log(link.clicks);
       link.clicks.forEach(click => {
         const a = arr.find(e => e.name == click.targetParamValue)
-        a.value++;
+        if (a) a.value++;
       });
       res.json(arr);
 
